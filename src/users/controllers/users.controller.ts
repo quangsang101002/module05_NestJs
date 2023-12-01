@@ -52,14 +52,17 @@ export class UsersController {
   async show(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.find(id);
   }
-
+  @Public()
   @Put('/:id')
+  @UseInterceptors(FileInterceptor('avatar'))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() requestBody: UpdateUserRequest,
+    @UploadedFile() avatar: Express.Multer.File,
   ) {
-    return await this.usersService.update(id, requestBody);
+    return await this.usersService.update(id, requestBody, avatar);
   }
+
   @Delete('/:id')
   @HttpCode(204)
   async destroy(@Param('id', ParseIntPipe) id: number) {

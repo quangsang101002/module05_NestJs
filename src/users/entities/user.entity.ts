@@ -29,10 +29,10 @@ export class User {
   email: string;
 
   @Column({ name: 'first_name', type: 'varchar', length: 50, nullable: true })
-  firstName?: string;
+  first_name?: string;
 
   @Column({ name: 'last_name', type: 'varchar', length: 50, nullable: true })
-  lastName?: string;
+  last_name?: string;
 
   @Column({ type: 'varchar', length: 255 })
   password: string;

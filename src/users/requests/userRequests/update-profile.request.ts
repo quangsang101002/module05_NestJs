@@ -6,20 +6,7 @@ import {
 } from 'class-validator';
 
 // https://github.com/typestack/class-validator#validation-decorators
-export class UpdateUserRequest {
-  @IsOptional()
-  @MaxLength(50)
-  first_name: string;
-
-  @IsOptional()
-  @MaxLength(50)
-  last_name: string;
-
-  @IsOptional()
-  // @IsStrongPassword()
-  @Length(8, 20)
-  password?: string;
-
+export class UpdateProfileRequest {
   @IsOptional()
   user_avatar?: string;
 
@@ -28,9 +15,6 @@ export class UpdateUserRequest {
 
   @IsOptional()
   address?: string;
-
-  @IsOptional()
-  email?: string;
   @IsOptional()
   phone_number: string;
 }

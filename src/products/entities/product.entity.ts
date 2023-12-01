@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Comment } from '../../users/entities/comment.entity';
 
-@Entity('product')
+@Entity('products')
 export class Product {
   @PrimaryGeneratedColumn()
   id: number;
@@ -29,8 +29,11 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   unit_price: number;
 
-  @Column({ type: 'text', nullable: true })
-  image: string;
+  @Column({ name: 'avatar', type: 'text', nullable: true })
+  avatar: string;
+
+  @Column({ name: 'gallery', type: 'text', nullable: true })
+  gallery: string;
 
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;

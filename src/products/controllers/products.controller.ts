@@ -39,16 +39,16 @@ export class ProductController {
   @HttpCode(201)
   @UseInterceptors(
     FileFieldsInterceptor([
-      { name: 'avatar_pd', maxCount: 1 },
-      { name: 'product', maxCount: 12 },
+      { name: 'avatar', maxCount: 1 },
+      { name: 'gallery', maxCount: 12 },
     ]),
   )
   async create(
     @Body() requestBody: createProductRequest,
     @UploadedFiles()
     products: {
-      avatar_pd?: Express.Multer.File[];
-      product?: Express.Multer.File[];
+      avatar?: Express.Multer.File[];
+      gallery?: Express.Multer.File[];
     },
   ) {
     return await this.searchProduct.create(requestBody, products);

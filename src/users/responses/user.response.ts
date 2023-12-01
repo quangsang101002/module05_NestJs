@@ -7,14 +7,14 @@ export class UserResponse {
 
   email: string;
 
-  firstName?: string;
+  first_name?: string;
 
-  lastName?: string;
+  last_name?: string;
 
   constructor(user: User) {
     this.id = user.id;
     this.email = user.email;
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
+    this.first_name = user.first_name;
+    this.last_name = user.last_name;
   }
 }

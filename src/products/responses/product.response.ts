@@ -7,7 +7,8 @@ export class ProductResponse {
   category: number;
   unit_price: number;
   description: string;
-  image: string;
+  avatar: string;
+  gallery: string;
 
   constructor(product: Product) {
     this.id = product.id;
@@ -16,6 +17,7 @@ export class ProductResponse {
     this.category = product.category;
     this.unit_price = product.unit_price;
     this.description = product.description;
-    this.image = product.image;
+    this.avatar = product.avatar;
+    this.gallery = product.gallery;
   }
 }

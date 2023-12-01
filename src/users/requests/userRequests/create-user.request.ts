@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
+  IsStrongPassword,
   // IsStrongPassword,
   Length,
   Max,
@@ -32,7 +33,7 @@ export class CreateUserRequest {
 
   @IsNotEmpty()
   @Length(8, 20)
-  // @IsStrongPassword()
+  @IsStrongPassword()
   password: string;
 
   @IsOptional()
@@ -46,4 +47,6 @@ export class CreateUserRequest {
   @IsOptional()
   @MaxLength(256)
   address: string;
+  @IsOptional()
+  userAvatar: string;
 }

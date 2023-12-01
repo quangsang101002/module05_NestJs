@@ -10,5 +10,6 @@ export class createProductRequest {
   // @IsNotEmpty()
   category: number;
   // @IsNotEmpty()
-  image: string;
+  avatar: string;
+  gallery: string;
 }

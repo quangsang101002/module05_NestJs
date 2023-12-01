@@ -32,33 +32,34 @@ export class productService {
   async create(
     requestBody: createProductRequest,
     products: {
-      avatar_pd?: Express.Multer.File[];
-      product?: Express.Multer.File[];
+      avatar?: Express.Multer.File[];
+      gallery?: Express.Multer.File[];
     },
   ): Promise<void> {
     let originalname: string | null = null;
     let paths: string | null = null;
+    let productLocationAvatar: string | null = null;
     let productLocation: string | null = null;
 
     let productPath = null;
     let avatar = null;
 
-    if (products.avatar_pd) {
-      for (const image of products.product) {
+    if (products.avatar) {
+      for (const image of products.avatar) {
         originalname = image.originalname;
         const productExtension = getFileExtension(originalname);
 
         // Vấn đề: Ghi đè các biến trong mỗi vòng lặp
-        productPath = `products/${products.product.length}.${productExtension}`;
-        productLocation = `./public/${productPath}`;
+        productPath = `products/${products.avatar.length}.${productExtension}`;
+        productLocationAvatar = `./public/${productPath}`;
 
-        fs.writeFileSync(productLocation, image.buffer);
+        fs.writeFileSync(productLocationAvatar, image.buffer);
       }
     }
 
-    if (products.product) {
-      for (let i = 0; i < products.product.length; i++) {
-        const image = products.product[i];
+    if (products.gallery) {
+      for (let i = 0; i < products.gallery.length; i++) {
+        const image = products.gallery[i];
 
         originalname = image.originalname;
         const productExtension = getFileExtension(originalname);
@@ -76,7 +77,8 @@ export class productService {
     product.name_product = requestBody.name_product;
     product.category = requestBody.category;
     product.description = requestBody.description;
-    product.image = requestBody.image;
+    product.avatar = productLocationAvatar;
+    product.gallery = productLocation;
 
     await this.productRepository.save(product);
   }
