@@ -57,15 +57,30 @@ export class ProductController {
   async find(@Param('id', ParseIntPipe) id: number) {
     return await this.searchProduct.find(id);
   }
+  @Public()
   @Put('/:id')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'avatar', maxCount: 1 },
+      { name: 'gallery', maxCount: 12 },
+    ]),
+  )
   async update(
+    @UploadedFiles()
+    products: {
+      avatar?: Express.Multer.File[];
+      gallery?: Express.Multer.File[];
+    },
     @Param('id', ParseIntPipe) id: number,
     @Body() updateBody: createProductRequest,
   ) {
-    return await this.searchProduct.update(id, updateBody);
+    return await this.searchProduct.update(id, updateBody, products);
   }
+  @Public()
   @Delete('/:id')
   async delete(@Param('id') id: number) {
+    console.log('---id', id);
+
     return await this.searchProduct.delete(id);
   }
 }

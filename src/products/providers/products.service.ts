@@ -23,9 +23,9 @@ export class productService {
         { description: ILike(`%${keyword || ''}`) },
         { sku: ILike(`%${keyword || ''}`) },
       ],
-      order: { id: 'DESC' },
-      take: limit,
-      skip: page,
+      order: { id: 'ASC' },
+      // take: limit,
+      // skip: page,
     });
   }
 
@@ -77,6 +77,7 @@ export class productService {
     product.name_product = requestBody.name_product;
     product.category = requestBody.category;
     product.description = requestBody.description;
+    product.unit_price = requestBody.unit_price;
     product.avatar = productLocationAvatar;
     product.gallery = productLocation;
 
@@ -92,17 +93,63 @@ export class productService {
   }
   async update(
     id: number,
-    requestBody: createProductRequest,
+    requestBody: UpdateProductRequest,
+    products: {
+      avatar?: Express.Multer.File[];
+      gallery?: Express.Multer.File[];
+    },
   ): Promise<UpdateProductRequest> {
+    let originalname: string | null = null;
+    let paths: string | null = null;
+    let productLocationAvatar: string | null = null;
+    let productLocation: string | null = null;
+    let productPath = null;
+    if (products.avatar) {
+      for (const avatar_pd of products.avatar) {
+        originalname = avatar_pd.originalname;
+        const productExtension = getFileExtension(originalname);
+
+        // Vấn đề: Ghi đè các biến trong mỗi vòng lặp
+        productPath = `products/${products.avatar.length}.${productExtension}`;
+        productLocationAvatar = `./public/${productPath}`;
+
+        fs.writeFileSync(productLocationAvatar, avatar_pd.buffer);
+      }
+    }
+    if (products.gallery) {
+      for (let i = 0; i < products.gallery.length; i++) {
+        const image = products.gallery[i];
+
+        originalname = image.originalname;
+        const productExtension = getFileExtension(originalname);
+
+        // Sử dụng một định danh duy nhất (index) cho mỗi ảnh
+        productPath = `products/anh-${i + 1}.${productExtension}`;
+        productLocation = `./public/${productPath}`;
+
+        fs.writeFileSync(productLocation, image.buffer);
+      }
+    }
+
     const product = await this.productRepository.findOneBy({ id });
     if (!product) {
       throw new NotFoundException();
     }
 
-    this.productRepository.update({ id: id }, requestBody);
+    const updateProduct = requestBody;
+
+    updateProduct.avatar = productLocationAvatar;
+
+    updateProduct.gallery = productLocation;
+    console.log(' updateProduct--', updateProduct);
+
+    this.productRepository.update({ id: id }, updateProduct);
     return this.find(id);
   }
+
   async delete(id: number): Promise<void> {
+    console.log('---', id);
+
     const product = await this.productRepository.findOneBy({ id });
     if (!product) {
       throw new NotFoundException();

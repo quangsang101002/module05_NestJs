@@ -10,6 +10,8 @@ export class UpdateProductRequest {
   @IsOptional()
   category: number;
   @IsOptional()
+  unit_price: number;
+  @IsOptional()
   avatar: string;
   @IsOptional()
   gallery: string;

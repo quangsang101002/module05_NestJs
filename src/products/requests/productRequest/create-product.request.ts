@@ -10,6 +10,7 @@ export class createProductRequest {
   // @IsNotEmpty()
   category: number;
   // @IsNotEmpty()
+  unit_price: number;
   avatar: string;
   gallery: string;
 }
