@@ -24,8 +24,8 @@ export class productService {
         { sku: ILike(`%${keyword || ''}`) },
       ],
       order: { id: 'ASC' },
-      // take: limit,
-      // skip: page,
+      take: limit,
+      skip: page,
     });
   }
 
@@ -50,13 +50,13 @@ export class productService {
         const productExtension = getFileExtension(originalname);
 
         // Vấn đề: Ghi đè các biến trong mỗi vòng lặp
-        productPath = `products/${products.avatar.length}.${productExtension}`;
+        productPath = `avatar_pd/${products.avatar.length}.${productExtension}`;
         productLocationAvatar = `./public/${productPath}`;
 
         fs.writeFileSync(productLocationAvatar, image.buffer);
       }
     }
-
+    const galleryPaths: string[] = [];
     if (products.gallery) {
       for (let i = 0; i < products.gallery.length; i++) {
         const image = products.gallery[i];
@@ -69,6 +69,7 @@ export class productService {
         productLocation = `./public/${productPath}`;
 
         fs.writeFileSync(productLocation, image.buffer);
+        galleryPaths.push(productLocation);
       }
     }
 
@@ -79,7 +80,7 @@ export class productService {
     product.description = requestBody.description;
     product.unit_price = requestBody.unit_price;
     product.avatar = productLocationAvatar;
-    product.gallery = productLocation;
+    product.gallery = galleryPaths.join(',');
 
     await this.productRepository.save(product);
   }
@@ -116,6 +117,7 @@ export class productService {
         fs.writeFileSync(productLocationAvatar, avatar_pd.buffer);
       }
     }
+    const galleryPaths: string[] = [];
     if (products.gallery) {
       for (let i = 0; i < products.gallery.length; i++) {
         const image = products.gallery[i];
@@ -128,6 +130,7 @@ export class productService {
         productLocation = `./public/${productPath}`;
 
         fs.writeFileSync(productLocation, image.buffer);
+        galleryPaths.push(productLocation);
       }
     }
 
@@ -140,8 +143,7 @@ export class productService {
 
     updateProduct.avatar = productLocationAvatar;
 
-    updateProduct.gallery = productLocation;
-    console.log(' updateProduct--', updateProduct);
+    updateProduct.gallery = galleryPaths.join(',');
 
     this.productRepository.update({ id: id }, updateProduct);
     return this.find(id);

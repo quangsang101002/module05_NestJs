@@ -19,7 +19,7 @@ export class AuthService {
       username: loginRequest.username,
     });
     if (!user) {
-      throw new UnauthorizedException('không thể xác thực--1');
+      throw new UnauthorizedException('không thể xác thực');
     }
     const isMath = await bcrypt.compare(loginRequest.password, user.password);
     if (!isMath) {

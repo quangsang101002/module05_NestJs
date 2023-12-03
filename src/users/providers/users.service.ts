@@ -182,7 +182,6 @@ export class UsersService {
         { id: profileId },
         userProfileToUpdate,
       );
-      console.log('userProfileToUpdate', userProfileToUpdate);
 
       await queryRunner.commitTransaction();
     } catch (err) {
