@@ -24,7 +24,7 @@ import {
 @Controller('product')
 export class ProductController {
   constructor(private searchProduct: productService) {}
-  @Public()
+
   @Get()
   async search(@Query() searchProductRequest: SearchProductRequest) {
     return await this.searchProduct.search(
@@ -34,7 +34,6 @@ export class ProductController {
     );
   }
 
-  @Public()
   @Post()
   @HttpCode(201)
   @UseInterceptors(
@@ -57,7 +56,7 @@ export class ProductController {
   async find(@Param('id', ParseIntPipe) id: number) {
     return await this.searchProduct.find(id);
   }
-  @Public()
+
   @Put('/:id')
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -76,7 +75,7 @@ export class ProductController {
   ) {
     return await this.searchProduct.update(id, updateBody, products);
   }
-  @Public()
+
   @Delete('/:id')
   async delete(@Param('id') id: number) {
     console.log('---id', id);

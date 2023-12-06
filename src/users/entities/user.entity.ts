@@ -37,6 +37,10 @@ export class User {
   @Column({ type: 'varchar', length: 255 })
   password: string;
 
+  @Column({ nullable: true })
+  lockedUntil: Date; // Thời điểm mà tài khoản sẽ được mở khóa
+  @Column({ nullable: true })
+  daysUntilUnlock: number; // Số ngày còn lại mở khóa
   @CreateDateColumn({ name: 'created_at', type: 'datetime' })
   createdAt: Date;
 

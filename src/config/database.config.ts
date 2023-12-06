@@ -12,7 +12,7 @@ const options = {
   entities: [`${__dirname}/**/*.entity.ts`],
   // migrations: [`${__dirname}/../../db/migrations/*.{ts,js}`],
   autoLoadEntities: true,
-  synchronize: false,
+  synchronize: true,
 };
 
 export default TypeOrmModule.forRoot(options as TypeOrmModuleOptions);

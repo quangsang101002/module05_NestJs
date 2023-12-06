@@ -18,16 +18,27 @@ export class AuthService {
     const user = await this.userRepository.findOneBy({
       username: loginRequest.username,
     });
+
     if (!user) {
-      throw new UnauthorizedException('không thể xác thực');
+      throw new UnauthorizedException('Không thể xác thực');
     }
-    const isMath = await bcrypt.compare(loginRequest.password, user.password);
-    if (!isMath) {
-      throw new UnauthorizedException('không thể xác thực');
+
+    if (
+      user.lockedUntil &&
+      user.lockedUntil > new Date() &&
+      (user.daysUntilUnlock || 0) > 0
+    ) {
+      throw new UnauthorizedException(
+        `Tài khoản của bạn đã bị khóa. Số ngày còn lại: ${user.daysUntilUnlock}`,
+      );
+    }
+
+    const isMatch = await bcrypt.compare(loginRequest.password, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Không thể xác thực');
     }
 
     const payload = { sub: user.id, username: user.username };
-
     const token = await this.jwtService.signAsync(payload);
 
     const loginResponse = new LoginResponse();

@@ -24,8 +24,8 @@ export class productService {
         { sku: ILike(`%${keyword || ''}`) },
       ],
       order: { id: 'ASC' },
-      take: limit,
-      skip: page,
+      take: limit || 10, // Số lượng bản ghi trả về mặc định là 10 nếu limit không được cung cấp
+      skip: Math.max(0, (page || 1) - 1) * (limit || 10),
     });
   }
 
@@ -41,7 +41,7 @@ export class productService {
     let productLocationAvatar: string | null = null;
     let productLocation: string | null = null;
 
-    let productPath = null;
+    let productAvatarPath = null;
     let avatar = null;
 
     if (products.avatar) {
@@ -50,12 +50,13 @@ export class productService {
         const productExtension = getFileExtension(originalname);
 
         // Vấn đề: Ghi đè các biến trong mỗi vòng lặp
-        productPath = `avatar_pd/${products.avatar.length}.${productExtension}`;
-        productLocationAvatar = `./public/${productPath}`;
+        productAvatarPath = `avatar_pd/${products.avatar.length}.${productExtension}`;
+        productLocationAvatar = `./dist/public/${productAvatarPath}`;
 
         fs.writeFileSync(productLocationAvatar, image.buffer);
       }
     }
+    let productPath = null;
     const galleryPaths: string[] = [];
     if (products.gallery) {
       for (let i = 0; i < products.gallery.length; i++) {
@@ -66,10 +67,10 @@ export class productService {
 
         // Sử dụng một định danh duy nhất (index) cho mỗi ảnh
         productPath = `products/anh-${i + 1}.${productExtension}`;
-        productLocation = `./public/${productPath}`;
+        productLocation = `./dist/public/${productPath}`;
 
         fs.writeFileSync(productLocation, image.buffer);
-        galleryPaths.push(productLocation);
+        galleryPaths.push(productPath);
       }
     }
 
@@ -79,7 +80,7 @@ export class productService {
     product.category = requestBody.category;
     product.description = requestBody.description;
     product.unit_price = requestBody.unit_price;
-    product.avatar = productLocationAvatar;
+    product.avatar = productAvatarPath;
     product.gallery = galleryPaths.join(',');
 
     await this.productRepository.save(product);
@@ -104,33 +105,37 @@ export class productService {
     let paths: string | null = null;
     let productLocationAvatar: string | null = null;
     let productLocation: string | null = null;
-    let productPath = null;
+    let productPathAvatar = null;
     if (products.avatar) {
-      for (const avatar_pd of products.avatar) {
+      for (let i = 0; i < products.avatar.length; i++) {
+        const avatar_pd = products.avatar[i];
         originalname = avatar_pd.originalname;
         const productExtension = getFileExtension(originalname);
 
-        // Vấn đề: Ghi đè các biến trong mỗi vòng lặp
-        productPath = `products/${products.avatar.length}.${productExtension}`;
-        productLocationAvatar = `./public/${productPath}`;
+        // Sử dụng timestamp làm định danh duy nhất
+        const timestamp = new Date().getTime();
+        productPathAvatar = `avatar_pd/${timestamp}_${i}.${productExtension}`;
+        productLocationAvatar = `./dist/public/${productPathAvatar}`;
 
         fs.writeFileSync(productLocationAvatar, avatar_pd.buffer);
       }
     }
+
     const galleryPaths: string[] = [];
+    let productPath = null;
     if (products.gallery) {
       for (let i = 0; i < products.gallery.length; i++) {
         const image = products.gallery[i];
-
         originalname = image.originalname;
         const productExtension = getFileExtension(originalname);
 
-        // Sử dụng một định danh duy nhất (index) cho mỗi ảnh
-        productPath = `products/anh-${i + 1}.${productExtension}`;
-        productLocation = `./public/${productPath}`;
+        // Sử dụng timestamp làm định danh duy nhất
+        const timestamp = new Date().getTime();
+        productPath = `products/anh-${i + 1}_${timestamp}.${productExtension}`;
+        productLocation = `./dist/public/${productPath}`;
 
         fs.writeFileSync(productLocation, image.buffer);
-        galleryPaths.push(productLocation);
+        galleryPaths.push(productPath);
       }
     }
 
@@ -141,7 +146,7 @@ export class productService {
 
     const updateProduct = requestBody;
 
-    updateProduct.avatar = productLocationAvatar;
+    updateProduct.avatar = productPathAvatar;
 
     updateProduct.gallery = galleryPaths.join(',');
 

@@ -25,11 +25,11 @@ export class CreateUserRequest {
 
   @IsOptional()
   @MaxLength(50)
-  firstName: string;
+  first_name: string;
 
   @IsOptional()
   @MaxLength(50)
-  lastName: string;
+  last_name: string;
 
   @IsNotEmpty()
   @Length(8, 20)
@@ -42,7 +42,7 @@ export class CreateUserRequest {
   gender: number;
   @IsOptional()
   // @IsPhoneNumber('VN')
-  phoneNumber: string;
+  phone_number: string;
 
   @IsOptional()
   @MaxLength(256)

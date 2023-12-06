@@ -52,7 +52,7 @@ export class UsersController {
   async show(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.find(id);
   }
-  @Public()
+
   @Put('/:id')
   @UseInterceptors(FileInterceptor('avatar'))
   async update(
@@ -67,5 +67,9 @@ export class UsersController {
   @HttpCode(204)
   async destroy(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.delete(id);
+  }
+  @Post('/:id')
+  async lockAccount(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.lockAccount(id);
   }
 }
