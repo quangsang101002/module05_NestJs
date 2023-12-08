@@ -40,9 +40,10 @@ export class UsersService {
         roles: true,
         comments: true,
       },
-      where: {
-        username: ILike(`%${keyword || ''}`),
-      },
+      where: [
+        { username: ILike(`%${keyword || ''}%`) },
+        { email: ILike(`%${keyword || ''}%`) },
+      ],
       order: { id: 'ASC' },
       take: limit || 10, // Số lượng bản ghi trả về mặc định là 10 nếu limit không được cung cấp
       skip: Math.max(0, (page || 1) - 1) * (limit || 10),
@@ -56,8 +57,6 @@ export class UsersService {
     let originalname: string | null = null;
     let paths: string | null = null;
     let avatarLocation: string | null = null;
-
-    console.log('createUser', createUser);
 
     if (avatar) {
       originalname = avatar.originalname;
@@ -141,13 +140,14 @@ export class UsersService {
     let avatarLocation: string | null = null;
     let avatarPath = null;
 
-    console.log('updateUser---------', updateUser);
-
     const userID = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.profile', 'profile')
       .where('user.id = :id', { id })
       .getOne();
+
+    console.log('update', userID.profile.id);
+
     const profileId = userID.profile.id;
     if (avatar) {
       const avatarExtension = getFileExtension(avatar.originalname);
@@ -255,5 +255,24 @@ export class UsersService {
         lockedUntil: updatedDaysUntilUnlock > 0 ? updatedLockedUntil : null,
       });
     }
+  }
+  async openAccount(
+    id: number,
+    requestBodyupdateData: { user: Partial<User> },
+  ): Promise<User> {
+    const user: User = await this.userRepository.findOneBy({ id });
+
+    // Kiểm tra người dùng có tồn tại hay không ?
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    // Cập nhật thông tin người dùng
+    Object.assign(user, requestBodyupdateData.user);
+
+    // Sử dụng phương thức save để cập nhật và nhận lại đối tượng đã được cập nhật
+    const updatedUser: User = await this.userRepository.save(user);
+
+    return updatedUser;
   }
 }

@@ -17,12 +17,14 @@ export class productService {
     page?: number,
     limit?: number,
   ): Promise<[Product[], number]> {
+    console.log('keyword', keyword);
     return await this.productRepository.findAndCount({
       where: [
-        { name_product: ILike(`%${keyword || ''}`) },
-        { description: ILike(`%${keyword || ''}`) },
-        { sku: ILike(`%${keyword || ''}`) },
+        { name_product: ILike(`%${keyword || ''}%`) },
+        { description: ILike(`%${keyword || ''}%`) },
+        { sku: ILike(`%${keyword || ''}%`) },
       ],
+
       order: { id: 'ASC' },
       take: limit || 10, // Số lượng bản ghi trả về mặc định là 10 nếu limit không được cung cấp
       skip: Math.max(0, (page || 1) - 1) * (limit || 10),

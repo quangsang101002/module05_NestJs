@@ -1,8 +1,18 @@
-import { Controller, Post, Body, Headers } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Headers,
+  Get,
+  UseGuards,
+  Request,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from '../providers/auth.service';
 import { LoginResponse } from '../responses/login.response';
 import { LoginRequest } from '../requests/login.request';
 import { Public } from 'src/auth/decorators/auth.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller()
 export class AuthController {
@@ -18,5 +28,10 @@ export class AuthController {
     @Headers('authorization') token: string | string[],
   ): Promise<boolean> {
     return await this.authService.logOut(token);
+  }
+
+  @Get('auth')
+  async getAuth(@Req() req) {
+    return await this.authService.getAuth(req.user.id);
   }
 }

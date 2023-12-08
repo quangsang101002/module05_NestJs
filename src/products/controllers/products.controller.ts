@@ -27,6 +27,8 @@ export class ProductController {
 
   @Get()
   async search(@Query() searchProductRequest: SearchProductRequest) {
+    console.log('searchProductRequest', searchProductRequest);
+
     return await this.searchProduct.search(
       searchProductRequest.keyword,
       searchProductRequest.page,

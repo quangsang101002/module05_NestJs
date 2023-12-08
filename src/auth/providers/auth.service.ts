@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { LoginResponse } from '../responses/login.response';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
@@ -6,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LoginRequest } from '../requests/login.request';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { UserResponse } from 'src/users/responses/user.response';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +19,7 @@ export class AuthService {
     private userRepository: Repository<User>,
     private jwtService: JwtService,
   ) {}
+
   async login(loginRequest: LoginRequest): Promise<LoginResponse> {
     const user = await this.userRepository.findOneBy({
       username: loginRequest.username,
@@ -38,8 +44,9 @@ export class AuthService {
       throw new UnauthorizedException('Không thể xác thực');
     }
 
-    const payload = { sub: user.id, username: user.username };
+    const payload = { id: user.id, username: user.username };
     const token = await this.jwtService.signAsync(payload);
+    const decoded = await this.jwtService.verifyAsync(token);
 
     const loginResponse = new LoginResponse();
     loginResponse.token = token;
@@ -65,5 +72,27 @@ export class AuthService {
     await this.userRepository.delete(authToken.id); // xóa token
 
     return true;
+  }
+
+  async getAuth(id: number): Promise<UserResponse> {
+    const user = await this.userRepository.findOneBy({ id });
+    const userID = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .where('user.id = :id', { id })
+      .getOne();
+
+    console.log('userID', userID);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+    const authResponse = new UserResponse(user);
+
+    authResponse.profile = userID.profile.user_avatar;
+    authResponse.phone_number = userID.profile.phone_number;
+    authResponse.address = userID.profile.address;
+
+    return authResponse;
   }
 }

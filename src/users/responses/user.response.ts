@@ -10,7 +10,10 @@ export class UserResponse {
   first_name?: string;
 
   last_name?: string;
-
+  user_avatar: string;
+  profile: string;
+  phone_number: string;
+  address: string;
   constructor(user: User) {
     this.id = user.id;
     this.username = user.username;

@@ -69,7 +69,14 @@ export class UsersController {
     return await this.usersService.delete(id);
   }
   @Post('/:id')
+  @HttpCode(201)
   async lockAccount(@Param('id', ParseIntPipe) id: number) {
     return await this.usersService.lockAccount(id);
+  }
+  @Put('/openlock/:id')
+  async openAccount(@Param('id', ParseIntPipe) id: number) {
+    return await this.usersService.openAccount(id, {
+      user: { lockedUntil: null, daysUntilUnlock: null },
+    });
   }
 }
