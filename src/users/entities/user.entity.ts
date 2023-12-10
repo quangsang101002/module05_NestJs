@@ -17,6 +17,7 @@ import { UserProfile } from './user-profile.entity';
 import { UserPassword } from './user-password.entity';
 import { Role } from '../../orders/role.entity';
 import { Comment } from './comment.entity';
+import { Order } from 'src/orders/entities/order.entity';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
@@ -65,4 +66,7 @@ export class User {
   roles: Role[];
   @OneToMany(() => Comment, (userComments: Comment) => userComments.user)
   comments: Comment[];
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 }

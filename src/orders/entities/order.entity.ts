@@ -6,12 +6,14 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm';
-
+import { User } from 'src/users/entities/user.entity';
 @Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn()
-  order_id: number;
+  id: number;
 
   @Column({ type: 'varchar', length: 10 })
   serial_number: string;
@@ -51,4 +53,8 @@ export class Order {
 
   @Column({ type: 'int', nullable: true })
   updated_by_id: number;
+
+  @ManyToOne(() => User, (user) => user.orders)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

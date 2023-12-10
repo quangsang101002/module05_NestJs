@@ -9,8 +9,8 @@ import { OrderModule } from './users/orders.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+// import { ServeStaticModule } from '@nestjs/serve-static';
+// import { join } from 'path';
 
 @Module({
   imports: [
@@ -19,9 +19,9 @@ import { join } from 'path';
     ProductModule,
     OrderModule,
     AuthModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'), // Điều chỉnh đường dẫn tùy thuộc
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, '..', 'public'), // Điều chỉnh đường dẫn tùy thuộc
+    // }),
   ],
   controllers: [AppController],
   providers: [

@@ -10,4 +10,8 @@ export class createOrderRequest {
   status: number;
   @IsOptional()
   note: string;
+  @IsNotEmpty()
+  total_price: number;
+  @IsNotEmpty()
+  user_id: number;
 }
