@@ -21,7 +21,7 @@ export class Order {
   @Column({ type: 'int', nullable: true })
   user_id: number;
 
-  @Column({ type: 'datetime', nullable: true })
+  @CreateDateColumn({ type: 'datetime' })
   ordered_at: Date;
 
   @Column({ type: 'varchar', length: 20, nullable: true })

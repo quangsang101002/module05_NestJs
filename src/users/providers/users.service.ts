@@ -171,6 +171,7 @@ export class UsersService {
 
     try {
       const user = new UpdateUserRequest();
+      user.username = updateUser.username
       user.email = updateUser.email;
       user.first_name = updateUser.first_name;
       user.last_name = updateUser.last_name;

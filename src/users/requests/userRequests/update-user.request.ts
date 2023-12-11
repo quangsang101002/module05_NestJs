@@ -14,7 +14,8 @@ export class UpdateUserRequest {
   @IsOptional()
   @MaxLength(50)
   last_name: string;
-
+  @IsOptional()
+  username: string;
   @IsOptional()
   // @IsStrongPassword()
   @Length(8, 20)
