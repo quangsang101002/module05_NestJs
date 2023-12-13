@@ -39,6 +39,7 @@ export class UsersService {
         passwords: true,
         roles: true,
         comments: true,
+        addresses: true,
       },
       where: [
         { username: ILike(`%${keyword || ''}%`) },
@@ -54,21 +55,26 @@ export class UsersService {
     createUser: CreateUserRequest,
     avatar: Express.Multer.File,
   ): Promise<void> {
+    const isExistEmailOrUsername = await this.userRepository.findOne({
+      where: [{ username: createUser.username }],
+    });
+    const isExistEmailOrEmail = await this.userRepository.findOne({
+      where: [{ email: createUser.email }],
+    });
+
+    if (isExistEmailOrUsername) {
+      throw new BadRequestException('Tên người dùng đã tồn tại');
+    }
+    if (isExistEmailOrEmail) {
+      throw new BadRequestException('Email đã tồn tại');
+    }
     let originalname: string | null = null;
-    let paths: string | null = null;
+    // let paths: string | null = null;
     let avatarLocation: string | null = null;
 
     if (avatar) {
       originalname = avatar.originalname;
-      paths = avatar.path;
-    }
-
-    const isExistEmailOrUsername = await this.userRepository.findOne({
-      where: [{ username: createUser.username }, { email: createUser.email }],
-    });
-
-    if (isExistEmailOrUsername) {
-      throw new BadRequestException();
+      // paths = avatar.path;
     }
 
     let avatarPath = null;
@@ -76,7 +82,7 @@ export class UsersService {
     if (avatar) {
       const avatarExtension = getFileExtension(originalname);
       avatarPath = `avatar/${createUser.username}.${avatarExtension}`;
-      avatarLocation = `./dist/public/${avatarPath}`;
+      avatarLocation = `./public/${avatarPath}`;
 
       // Ghi file vào thư mục lưu trữ
       fs.writeFileSync(avatarLocation, avatar.buffer);
@@ -146,13 +152,11 @@ export class UsersService {
       .where('user.id = :id', { id })
       .getOne();
 
-    console.log('update', userID.profile.id);
-
     const profileId = userID.profile.id;
     if (avatar) {
       const avatarExtension = getFileExtension(avatar.originalname);
       avatarPath = `avatar/${updateUser.first_name}.${avatarExtension}`;
-      avatarLocation = `./dist/public/${avatarPath}`;
+      avatarLocation = `./public/${avatarPath}`;
 
       // Ghi file vào thư mục lưu trữ
       fs.writeFileSync(avatarLocation, avatar.buffer);
@@ -171,7 +175,7 @@ export class UsersService {
 
     try {
       const user = new UpdateUserRequest();
-      user.username = updateUser.username
+      user.username = updateUser.username;
       user.email = updateUser.email;
       user.first_name = updateUser.first_name;
       user.last_name = updateUser.last_name;

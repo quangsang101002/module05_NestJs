@@ -79,10 +79,10 @@ export class AuthService {
     const userID = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('user.addresses', 'addresses')
+
       .where('user.id = :id', { id })
       .getOne();
-
-    console.log('userID', userID);
 
     if (!user) {
       throw new NotFoundException();
@@ -92,6 +92,7 @@ export class AuthService {
     authResponse.profile = userID.profile.user_avatar;
     authResponse.phone_number = userID.profile.phone_number;
     authResponse.address = userID.profile.address;
+    // authResponse.addresses = userID.addresses[];
 
     return authResponse;
   }

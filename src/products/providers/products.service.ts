@@ -17,7 +17,6 @@ export class productService {
     page?: number,
     limit?: number,
   ): Promise<[Product[], number]> {
-    console.log('keyword', keyword);
     return await this.productRepository.findAndCount({
       where: [
         { name_product: ILike(`%${keyword || ''}%`) },
@@ -53,7 +52,7 @@ export class productService {
 
         // Vấn đề: Ghi đè các biến trong mỗi vòng lặp
         productAvatarPath = `avatar_pd/${products.avatar.length}.${productExtension}`;
-        productLocationAvatar = `./dist/public/${productAvatarPath}`;
+        productLocationAvatar = `./public/${productAvatarPath}`;
 
         fs.writeFileSync(productLocationAvatar, image.buffer);
       }
@@ -69,7 +68,7 @@ export class productService {
 
         // Sử dụng một định danh duy nhất (index) cho mỗi ảnh
         productPath = `products/anh-${i + 1}.${productExtension}`;
-        productLocation = `./dist/public/${productPath}`;
+        productLocation = `./public/${productPath}`;
 
         fs.writeFileSync(productLocation, image.buffer);
         galleryPaths.push(productPath);
@@ -117,7 +116,7 @@ export class productService {
         // Sử dụng timestamp làm định danh duy nhất
         const timestamp = new Date().getTime();
         productPathAvatar = `avatar_pd/${timestamp}_${i}.${productExtension}`;
-        productLocationAvatar = `./dist/public/${productPathAvatar}`;
+        productLocationAvatar = `./public/${productPathAvatar}`;
 
         fs.writeFileSync(productLocationAvatar, avatar_pd.buffer);
       }
@@ -134,7 +133,7 @@ export class productService {
         // Sử dụng timestamp làm định danh duy nhất
         const timestamp = new Date().getTime();
         productPath = `products/anh-${i + 1}_${timestamp}.${productExtension}`;
-        productLocation = `./dist/public/${productPath}`;
+        productLocation = `./public/${productPath}`;
 
         fs.writeFileSync(productLocation, image.buffer);
         galleryPaths.push(productPath);
@@ -157,8 +156,6 @@ export class productService {
   }
 
   async delete(id: number): Promise<void> {
-    console.log('---', id);
-
     const product = await this.productRepository.findOneBy({ id });
     if (!product) {
       throw new NotFoundException();

@@ -24,11 +24,9 @@ import {
 @Controller('product')
 export class ProductController {
   constructor(private searchProduct: productService) {}
-
+  @Public()
   @Get()
   async search(@Query() searchProductRequest: SearchProductRequest) {
-    console.log('searchProductRequest', searchProductRequest);
-
     return await this.searchProduct.search(
       searchProductRequest.keyword,
       searchProductRequest.page,
@@ -54,6 +52,7 @@ export class ProductController {
   ) {
     return await this.searchProduct.create(requestBody, products);
   }
+  @Public()
   @Get('/:id')
   async find(@Param('id', ParseIntPipe) id: number) {
     return await this.searchProduct.find(id);
@@ -80,8 +79,6 @@ export class ProductController {
 
   @Delete('/:id')
   async delete(@Param('id') id: number) {
-    console.log('---id', id);
-
     return await this.searchProduct.delete(id);
   }
 }

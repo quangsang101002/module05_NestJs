@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToMany,
   OneToMany,
   OneToOne,
@@ -18,6 +19,8 @@ import { UserPassword } from './user-password.entity';
 import { Role } from '../../orders/role.entity';
 import { Comment } from './comment.entity';
 import { Order } from 'src/orders/entities/order.entity';
+import { Address } from './address.entiry';
+
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
@@ -37,7 +40,7 @@ export class User {
 
   @Column({ type: 'varchar', length: 255 })
   password: string;
-
+  @Column({ type: 'varchar', length: 255 })
   @Column({ nullable: true })
   lockedUntil: Date; // Thời điểm mà tài khoản sẽ được mở khóa
   @Column({ nullable: true })
@@ -69,4 +72,7 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
+
+  @OneToMany(() => Address, (address) => address.user)
+  addresses: Address[];
 }

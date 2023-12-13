@@ -14,6 +14,8 @@ export class UserResponse {
   profile: string;
   phone_number: string;
   address: string;
+  addresses: string;
+
   constructor(user: User) {
     this.id = user.id;
     this.username = user.username;
